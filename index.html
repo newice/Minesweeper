@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Minesweeper</title>
+<script src="jquery.js"></script>
+<script src="minesweeper.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="config">
+    <div class="button easy">Einfach</div>
+    <div class="button middle">Mittel</div>
+    <div class="button hard">Schwer</div>
+    <div class="button cudtom">Benutzerdefiniert
+		<div class="cfgCustom">
+			Spalten: <input class="cfgCustom" type="text" name="axis_x" value="10">
+			Zeilen: <input class="cfgCustom" type="text" name="axis_y" value="11">
+			Minen: <input class="cfgCustom" type="text" name="mines_num" value="20">  
+			<input type="button" name="newGame" value="Start">  
+		</div>
+    </div>
+	<span id="mwTimeCounter">	</span>
+    
+  </div>
+  <table class="area">
+  </table>
+  <div class="minesCount"></div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+.cell {
+	background-color: silver;
+	border: 1px solid black;
+	cursor: pointer;
+	height: 23px;
+	text-align: center;
+	width: 24px;
+	font-weight:bold;
+}
+.area .row .cell:hover {
+	background-color:grey;
+	font-weight:bold;
+}
+.button.act {
+	background-color: #33cc33;
+}
+.button {
+	background-color: #00FF00;
+	border: 2px solid silver;
+	display: inline-block;
+	margin: 2px;
+	cursor:pointer;
+}
+.area {
+	border-collapse: collapse;
+	display: inline-block;
+	margin: 0;
+	padding: 1px;
+}
+.cfgCustom {
+	display:none;
+}
+.act .cfgCustom {
+	display:block;
+}
+
+.c_1 {
+	color: blue;
+}
+.c_2 {
+ color: green;
+}
+.c_3 {
+ color: red;
+}
+.c_4 {
+ color: darkblue;
+}
