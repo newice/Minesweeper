@@ -15,7 +15,7 @@ var minesweeper = (function(){
 	var timeCount = -1;
 	var intervalCount = 0;
 	var minew
-	
+
 	function setHints(x,y) {
 		if(x > 0){
 			if(minenFeld[x-1][y] !=mine) minenFeld[x-1][y]++;
@@ -27,9 +27,8 @@ var minesweeper = (function(){
 			if(minenFeld[x+1][y] !=mine) minenFeld[x+1][y]++;
 		}
 		if(y < axis_y-1){
-			if(minenFeld[x][y+1] !=mine) minenFeld[x][y+1]++;			
+			if(minenFeld[x][y+1] !=mine) minenFeld[x][y+1]++;
 		}
-		
 		if((x > 0) && (y > 0)){
 			if(minenFeld[x-1][y-1] !=mine) minenFeld[x-1][y-1]++;
 		}
@@ -43,48 +42,47 @@ var minesweeper = (function(){
 			if(minenFeld[x+1][y+1] !=mine) minenFeld[x+1][y+1]++;
 		}
 	}
-	  
+
 	function makeClicks(x,y) {
-		  var e = jQuery.Event("mousedown", { which : 1 });
-		  x = parseInt(x);
-		  y = parseInt(y);
-		if((x > 0)  ){                                
-		 
+		var e = jQuery.Event("mousedown", { which : 1 });
+		x = parseInt(x);
+		y = parseInt(y);
+		if((x > 0)  ){
 			$('.'+cCell+'_'+parseInt(x-1)+'_'+y).trigger(e);
 		}
-		if((y > 0) ){    
-		  $('.'+cCell+'_'+(x)+'_'+parseInt(y-1)).trigger(e);
+		if((y > 0) ){
+			$('.'+cCell+'_'+(x)+'_'+parseInt(y-1)).trigger(e);
 		}
-		if((x < axis_x-1)){  
-	  $('.'+cCell+'_'+parseInt(x+1)+'_'+(y)).trigger(e);
+		if((x < axis_x-1)){
+			$('.'+cCell+'_'+parseInt(x+1)+'_'+(y)).trigger(e);
 		}
-		if((y < axis_y-1) ){  
-	  $('.'+cCell+'_'+(x)+'_'+parseInt(y+1)).trigger(e);	
+		if((y < axis_y-1) ){
+			$('.'+cCell+'_'+(x)+'_'+parseInt(y+1)).trigger(e);
 		}
-		if(((x > 0) && (y > 0)) ){   
-	  $('.'+cCell+'_'+parseInt(x-1)+'_'+parseInt(y-1)).trigger(e);
+		if(((x > 0) && (y > 0)) ){
+			$('.'+cCell+'_'+parseInt(x-1)+'_'+parseInt(y-1)).trigger(e);
 		}
-		if(((x > 0) && (y < axis_y-1)) ){  
-	  $('.'+cCell+'_'+parseInt(x-1)+'_'+parseInt(y+1)).trigger(e);
+		if(((x > 0) && (y < axis_y-1)) ){
+			$('.'+cCell+'_'+parseInt(x-1)+'_'+parseInt(y+1)).trigger(e);
 		}
-		if(((x < axis_x-1) && (y > 0)) ){   
-	  $('.'+cCell+'_'+parseInt(x+1)+'_'+parseInt(y-1)).trigger(e);
+		if(((x < axis_x-1) && (y > 0)) ){
+			$('.'+cCell+'_'+parseInt(x+1)+'_'+parseInt(y-1)).trigger(e);
 		}
-		if(((x < axis_x-1) && (y < axis_y-1)) ){   
-	  $('.'+cCell+'_'+parseInt(x+1)+'_'+parseInt(y+1)).trigger(e);
-		}       
+		if(((x < axis_x-1) && (y < axis_y-1)) ){
+			$('.'+cCell+'_'+parseInt(x+1)+'_'+parseInt(y+1)).trigger(e);
+		}
 	}
-	
+
 	function buildMinenFeld() {
 		var minen = minesCnt;
 		minenFeld = new Array(axis_x);
 		for(var i=0;i<axis_x;i++){
-			minenFeld[i] = new Array(axis_y);		
+			minenFeld[i] = new Array(axis_y);
 			for(j=0;j<axis_y;j++){
 				minenFeld[i][j]=0;
 			}
 		}
-		
+
 		while(minen > 0){
 			var tempX = parseInt( Math.random() *axis_x );
 			var tempY = parseInt( Math.random() *axis_y );
@@ -95,6 +93,7 @@ var minesweeper = (function(){
 			}
 		}
 	}
+
 	function build(){
 		field.html('');
 		var rowObj = $(row);
@@ -102,48 +101,48 @@ var minesweeper = (function(){
 			for(j=0;j<axis_y;j++){
 				rowObj.append($(cell).addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
 			}
-			field.append(rowObj);	
+			field.append(rowObj);
 			rowObj = $(row);
 		}
 	}
-	
+
 	function endGame(victory) {
 		if(!theEnd){
 			theEnd = true;
 			window.clearInterval(intervalCount);
-				$('.'+cCell+'.closed').trigger(jQuery.Event("mousedown", { which : 1 })); 
+				$('.'+cCell+'.closed').trigger(jQuery.Event("mousedown", { which : 1 }));
 			if (victory) {
 				var color = 'green';
 			} else {
 				var color = 'red';
 			}
-			$('.cell', field).css('border-color', color);			
+			$('.cell', field).css('border-color', color);
 		}
 	}
-	
+
 	function handleLeftMouseClick(obj) {
-		var x =(obj.attr('class').split(cCell+'_')[1].split('_')[0]);
-		var y =(obj.attr('class').split(cCell+'_')[1].split('_')[1]);
-		
+		var x = (obj.attr('class').split(cCell+'_')[1].split('_')[0]);
+		var y = (obj.attr('class').split(cCell+'_')[1].split('_')[1]);
+
 		if (timeCount < 0){
 			timeCount = 0;
 			$('#mwTimeCounter').text('0');
-			intervalCount = window.setInterval(function(){       
+			intervalCount = window.setInterval(function(){
 				$('#mwTimeCounter').text(++timeCount);
 			}, 1000);
-			
+
 			buildMinenFeld();
 			while (minenFeld[x][y] == mine ) {
 				buildMinenFeld();
 			}
-			
+
 		}
-	
+
 		if(obj.hasClass('closed') && !(obj.data('right') == flag) ) {
 			obj.removeClass('closed');
 			obj.addClass('open');
 			if(minenFeld[x][y] != mine ){
-				obj.css('background', '#ccc'); 
+				obj.css('background', '#ccc');
 				obj.addClass('c_' + minenFeld[x][y])
 				if(minenFeld[x][y] == 0 ){
 				  obj.text('') ;
@@ -151,7 +150,7 @@ var minesweeper = (function(){
 				} else {
 				  obj.text(minenFeld[x][y]);
 				}
-				
+
 				if(!theEnd && initialMinesCnt >= $('.closed').length) {
 					endGame(true);
 				 }
@@ -186,7 +185,7 @@ var minesweeper = (function(){
 			}
 		}
 	}
-	
+
 	function handleMousedown(event, aa){
 		var obj = $(this);
 		switch (event.which) {
@@ -198,9 +197,9 @@ var minesweeper = (function(){
 		break;
 		default:
 			alert('komische maus');
-		} 
+		}
 	}
-	
+
 	function init(conf) {
 		axis_x = parseInt(conf.x);
 		axis_y = parseInt(conf.y);
@@ -210,17 +209,17 @@ var minesweeper = (function(){
 		if (minesCnt >= (axis_x * axis_y)) {
 			alert ('Zu viele Minen!');
 		} else {
-			field= conf.area;
+			field = conf.area;
 			theEnd = false;
-			
+
 			$('.minesCount').text(initialMinesCnt);
 			build();
-			$('.'+cCell ,field).mousedown(handleMousedown);
+			$('.' + cCell ,field).mousedown(handleMousedown);
 			timeCount = -1;
 			$('#mwTimeCounter').text('');
 		}
 	}
-	
+
   return{
 		init:init
 	}
@@ -232,6 +231,7 @@ document.oncontextmenu = function(e){
 	return false;
   }
 }
+
 $(document).ready(function(){
 	/**
 	 * Aktive Buttons hervorheben
@@ -240,14 +240,14 @@ $(document).ready(function(){
 		$('.button').removeClass('act');
 		$(this).addClass('act');
 	});
-	
+
 
 	$('input[name="newGame"]').click(function(){
 		minesweeper.init({
 			area:$('.area'),
 			x:$('.cfgCustom[name="axis_x"]').val(),
 			y:$('.cfgCustom[name="axis_y"]').val(),
-			mines:$('.cfgCustom[name="mines_num"]').val()		
+			mines:$('.cfgCustom[name="mines_num"]').val()
 		})
 	});
 	$('.button.easy').click(function(){
@@ -255,15 +255,15 @@ $(document).ready(function(){
 			area:$('.area'),
 			x:9,
 			y:9,
-			mines:10		
+			mines:10
 		})
-	});	
+	});
 	$('.button.middle').click(function(){
 		minesweeper.init({
 			area:$('.area'),
 			x:16,
 			y:16,
-			mines:40		
+			mines:40
 		})
 	});
 	$('.button.hard').click(function(){
@@ -271,9 +271,9 @@ $(document).ready(function(){
 			area:$('.area'),
 			x:16,
 			y:30,
-			mines:99		
+			mines:99
 		})
 	});
-	
-	
+
+
 });
