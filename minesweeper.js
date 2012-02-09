@@ -9,6 +9,7 @@ var minesweeper = (function(){
 	var row="<tr class='row'></tr>";
 	var minenFeld;
 	var hinweisFeld;
+	var objFeld;
 	var mine = "M";
 	var flag = "X";
 	var theEnd;
@@ -44,32 +45,33 @@ var minesweeper = (function(){
 	}
 
 	function makeClicks(x,y) {
-		var e = jQuery.Event("mousedown", { which : 1 });
 		x = parseInt(x);
 		y = parseInt(y);
-		if((x > 0)  ){
-			$('.'+cCell+'_'+parseInt(x-1)+'_'+y).trigger(e);
+
+		var temp;
+		if ((x > 0) && objFeld[x - 1][y].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x - 1][y]);
 		}
-		if((y > 0) ){
-			$('.'+cCell+'_'+(x)+'_'+parseInt(y-1)).trigger(e);
+		if ((y > 0) && objFeld[x][y - 1].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x][y - 1]);
 		}
-		if((x < axis_x-1)){
-			$('.'+cCell+'_'+parseInt(x+1)+'_'+(y)).trigger(e);
+		if ((x < axis_x-1) && objFeld[x + 1][y].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x + 1][y]);
 		}
-		if((y < axis_y-1) ){
-			$('.'+cCell+'_'+(x)+'_'+parseInt(y+1)).trigger(e);
+		if ((y < axis_y-1) && objFeld[x][y + 1].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x][y + 1]);
 		}
-		if(((x > 0) && (y > 0)) ){
-			$('.'+cCell+'_'+parseInt(x-1)+'_'+parseInt(y-1)).trigger(e);
+		if ((x > 0) && (y > 0) && objFeld[x - 1][y - 1].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x - 1][y - 1]);
 		}
-		if(((x > 0) && (y < axis_y-1)) ){
-			$('.'+cCell+'_'+parseInt(x-1)+'_'+parseInt(y+1)).trigger(e);
+		if ((x > 0) && (y < axis_y-1) && objFeld[x - 1][y + 1].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x - 1][y + 1]);
 		}
-		if(((x < axis_x-1) && (y > 0)) ){
-			$('.'+cCell+'_'+parseInt(x+1)+'_'+parseInt(y-1)).trigger(e);
+		if ((x < axis_x-1) && (y > 0) && objFeld[x+1][y-1].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x+1][y-1]);
 		}
-		if(((x < axis_x-1) && (y < axis_y-1)) ){
-			$('.'+cCell+'_'+parseInt(x+1)+'_'+parseInt(y+1)).trigger(e);
+		if ((x < axis_x-1) && (y < axis_y-1) && objFeld[x+1][y+1].hasClass('closed')) {
+				handleLeftMouseClick(objFeld[x+1][y+1]);
 		}
 	}
 
@@ -94,23 +96,39 @@ var minesweeper = (function(){
 		}
 	}
 
-	function build(){
+	function build() {
 		field.html('');
 		var rowObj = $(row);
-		for(i=0;i<axis_x;i++){
-			for(j=0;j<axis_y;j++){
+		for(var i =0;i<axis_x;i++) {
+			for(var j=0;j<axis_y;j++) {
 				rowObj.append($(cell).addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
 			}
 			field.append(rowObj);
 			rowObj = $(row);
 		}
+		objFeld = new Array(axis_x);
+		for(var i = 0; i < axis_x; i++) {
+			objFeld[i] = new Array(axis_y);
+			for(var j = 0; j < axis_y; j++) {
+				objFeld[i][j] = $('.' + cCell + '_' + i + '_' + j, field);
+			}
+		}
 	}
 
 	function endGame(victory) {
-		if(!theEnd){
+		if (!theEnd) {
 			theEnd = true;
+			field.removeClass('running');
 			window.clearInterval(intervalCount);
-				$('.'+cCell+'.closed').trigger(jQuery.Event("mousedown", { which : 1 }));
+			for(var i = 0; i < axis_x; i++) {
+				for(var j = 0; j < axis_y; j++) {
+					if(objFeld[i][j].hasClass('closed') && !(objFeld[i][j].data('right') == flag) && (minenFeld[i][j] == mine)) {
+						 objFeld[i][j].css('background','red') ;
+						 objFeld[i][j].text(mine) ;
+					}
+				}
+			}
+			
 			if (victory) {
 				var color = 'green';
 			} else {
@@ -120,24 +138,24 @@ var minesweeper = (function(){
 		}
 	}
 
+	function initGame(x, y) {
+		timeCount = 0;
+		$('#mwTimeCounter').text('0');
+		intervalCount = window.setInterval(function(){
+			$('#mwTimeCounter').text(++timeCount);
+		}, 1000);
+
+		buildMinenFeld();
+		while (minenFeld[x][y] == mine ) {
+			buildMinenFeld();
+		}
+	}
 	function handleLeftMouseClick(obj) {
 		var x = (obj.attr('class').split(cCell+'_')[1].split('_')[0]);
 		var y = (obj.attr('class').split(cCell+'_')[1].split('_')[1]);
-
-		if (timeCount < 0){
-			timeCount = 0;
-			$('#mwTimeCounter').text('0');
-			intervalCount = window.setInterval(function(){
-				$('#mwTimeCounter').text(++timeCount);
-			}, 1000);
-
-			buildMinenFeld();
-			while (minenFeld[x][y] == mine ) {
-				buildMinenFeld();
-			}
-
+		if (timeCount < 0) {
+			initGame(x, y);
 		}
-
 		if(obj.hasClass('closed') && !(obj.data('right') == flag) ) {
 			obj.removeClass('closed');
 			obj.addClass('open');
@@ -187,16 +205,20 @@ var minesweeper = (function(){
 	}
 
 	function handleMousedown(event, aa){
-		var obj = $(this);
-		switch (event.which) {
-		case 1:
-			handleLeftMouseClick(obj);
+		if (!theEnd) {
+			var obj = $(this);
+			switch (event.which) {
+			case 1:
+				console.profile();
+				handleLeftMouseClick(obj);
+				console.profileEnd();
+				break;
+			case 3:
+				handleRightMouseClick(obj);
 			break;
-		case 3:
-			handleRightMouseClick(obj);
-		break;
-		default:
-			alert('komische maus');
+			default:
+				alert('komische maus');
+			}
 		}
 	}
 
@@ -211,10 +233,10 @@ var minesweeper = (function(){
 		} else {
 			field = conf.area;
 			theEnd = false;
-
+			field.addClass('running');
 			$('.minesCount').text(initialMinesCnt);
 			build();
-			$('.' + cCell ,field).mousedown(handleMousedown);
+			$('.closed.' + cCell ,field).mousedown(handleMousedown);
 			timeCount = -1;
 			$('#mwTimeCounter').text('');
 		}

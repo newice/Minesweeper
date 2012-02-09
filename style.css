@@ -1,5 +1,5 @@
 .cell {
-	background-color: silver;
+	background-color: #888888;
 	border: 1px solid black;
 	cursor: pointer;
 	height: 23px;
@@ -7,7 +7,7 @@
 	width: 24px;
 	font-weight:bold;
 }
-.area .row .cell:hover {
+.area.running .row .cell:hover {
 	background-color:grey;
 	font-weight:bold;
 }
