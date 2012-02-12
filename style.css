@@ -1,16 +1,47 @@
 .cell {
-	background-color: #888888;
 	border: 1px solid black;
 	cursor: pointer;
 	height: 23px;
 	text-align: center;
 	width: 24px;
+	font-weight: bold;
+}
+.cell.open {
+	background-color: #cccccc;
+}
+.cell.closed {
+	background-color: #888888;
+	-moz-box-shadow: 0 0 9px 0 black inset;
+	-webkit-box-shadow: 0 0 9px 0 black inset;
+	box-shadow: 0 0 9px 0 black inset;
+}
+.area.running .row .cell.closed:hover {
+	background-color:blue;
 	font-weight:bold;
 }
-.area.running .row .cell:hover {
-	background-color:grey;
-	font-weight:bold;
+.area.running .row .mineSuspect {
+	background-image: url('res/mine4.png');
+	background-repeat: no-repeat;
+	background-position: center center;
 }
+
+.row .mineSuspect.mine {
+	background-image: url('res/mine2.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.row .mineSuspect.noMine {
+	background-image: url('res/mine3.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.row .mine {
+	background-image: url('res/mine1.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+
 .button.act {
 	background-color: #33cc33;
 }

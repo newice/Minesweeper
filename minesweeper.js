@@ -122,19 +122,13 @@ var minesweeper = (function(){
 			window.clearInterval(intervalCount);
 			for(var i = 0; i < axis_x; i++) {
 				for(var j = 0; j < axis_y; j++) {
-					if(objFeld[i][j].hasClass('closed') && !(objFeld[i][j].data('right') == flag) && (minenFeld[i][j] == mine)) {
-						 objFeld[i][j].css('background','red') ;
-						 objFeld[i][j].text(mine) ;
+					if (objFeld[i][j].hasClass('closed')) {
+						objFeld[i][j].toggleClass('mine', minenFeld[i][j] == mine);
+						objFeld[i][j].toggleClass('noMine', minenFeld[i][j] != mine);
 					}
 				}
 			}
-			
-			if (victory) {
-				var color = 'green';
-			} else {
-				var color = 'red';
-			}
-			$('.cell', field).css('border-color', color);
+			field.addClass(victory ? 'win' : 'loose');
 		}
 	}
 
@@ -150,20 +144,20 @@ var minesweeper = (function(){
 			buildMinenFeld();
 		}
 	}
+	
 	function handleLeftMouseClick(obj) {
-		var x = (obj.attr('class').split(cCell+'_')[1].split('_')[0]);
-		var y = (obj.attr('class').split(cCell+'_')[1].split('_')[1]);
+		var x = parseInt(obj.attr('class').split(cCell+'_')[1].split('_')[0]);
+		var y = parseInt(obj.attr('class').split(cCell+'_')[1].split('_')[1]);
 		if (timeCount < 0) {
 			initGame(x, y);
 		}
 		if(obj.hasClass('closed') && !(obj.data('right') == flag) ) {
-			obj.removeClass('closed');
-			obj.addClass('open');
 			if(minenFeld[x][y] != mine ){
-				obj.css('background', '#ccc');
+				obj.removeClass('closed');
+				obj.addClass('open');
 				obj.addClass('c_' + minenFeld[x][y])
 				if(minenFeld[x][y] == 0 ){
-				  obj.text('') ;
+					obj.text('');
 				  makeClicks(x,y);
 				} else {
 				  obj.text(minenFeld[x][y]);
@@ -173,32 +167,28 @@ var minesweeper = (function(){
 					endGame(true);
 				 }
 			} else {
-				 obj.css('background','red') ;
-				 obj.text(mine) ;
+				 obj.css('background-color','red') ;
 				 endGame(false);
 			}
 		}
-		if (theEnd) {
-			if (obj.data('right') == flag && minenFeld[x][y] == mine) {
-				obj.css('background', 'green');
-			}
-			if (obj.data('right') == flag && minenFeld[x][y] != mine) {
-				obj.css('background', 'yellow');
-			}
-		}
 	}
+	
+	
 	function handleRightMouseClick(obj) {
 		if((timeCount >= 0) && obj.hasClass('closed')) {
 			if(!obj.data('right')){
+				obj.addClass('mineSuspect');
 				obj.data('right', flag);
-				obj.text(flag) ;
 				$('.minesCount').text(--minesCnt);
 			} else if(obj.data('right') == flag){
 				$('.minesCount').text(++minesCnt);
+				obj.addClass('noIdea');
+				obj.removeClass('mineSuspect');
 				obj.data('right', "?");
 				obj.text('?');
 			} else if(obj.data('right') == "?"){
-				obj.data('right', "");
+				obj.data('right', '');
+				obj.removeClass('noIdea');
 				obj.text('') ;
 			}
 		}
@@ -209,9 +199,9 @@ var minesweeper = (function(){
 			var obj = $(this);
 			switch (event.which) {
 			case 1:
-				console.profile();
+				// console.profile();
 				handleLeftMouseClick(obj);
-				console.profileEnd();
+				// console.profileEnd();
 				break;
 			case 3:
 				handleRightMouseClick(obj);
