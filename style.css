@@ -10,14 +10,13 @@
 	background-color: #cccccc;
 }
 .cell.closed {
-	background-color: #888888;
 	-moz-box-shadow: 0 0 9px 0 black inset;
 	-webkit-box-shadow: 0 0 9px 0 black inset;
 	box-shadow: 0 0 9px 0 black inset;
 }
 .area.running .row .cell.closed:hover {
-	background-color:blue;
-	font-weight:bold;
+	background-color: grey;
+	font-weight: bold;
 }
 .area.running .row .mineSuspect {
 	background-image: url('res/mine4.png');
@@ -41,28 +40,59 @@
 	background-position: center center;
 }
 
+.config {
+	height: 60px;
+	position: relative;
+}
 
 .button.act {
-	background-color: #33cc33;
+	background-color: grey;
 }
 .button {
-	background-color: #00FF00;
-	border: 2px solid silver;
-	display: inline-block;
-	margin: 2px;
-	cursor:pointer;
+	box-shadow: 0 0 5px white inset;
+    background-color: silver;
+    cursor: pointer;
+    float: left;
+    text-align: center;
+    width: 25%;
+	display: block;
+	padding: 5px 0;
 }
+.button:first-child {
+    border-radius: 10px 0 0 10px;
+}
+.button:last-child {
+    border-radius: 0 10px 10px 0;
+	
+}
+
 .area {
 	border-collapse: collapse;
 	display: inline-block;
-	margin: 0;
-	padding: 1px;
+	margin: 0 auto;
+}
+.area.running {
+	border: 5px solid black;
+}
+.area.loose {
+	border: 5px solid #ff0000;
+}
+.area.win {
+	border: 5px solid #00ff00;
 }
 .cfgCustom {
-	display:none;
+	width:40px;
 }
-.act .cfgCustom {
+.cfgCustomBox {
+	display:none;
+	position: absolute;
+	left: 0px;
+	right: 0;
+	top: 33px;
+}
+.act .cfgCustomBox {
 	display:block;
+	
 }
 
 .c_1 {
@@ -76,4 +106,39 @@
 }
 .c_4 {
  color: darkblue;
+}
+
+.footer {
+	position: relative;
+	height: 20px;
+}
+.minesCount  {
+	position: absolute;
+	right: 0;
+}
+#minesweeper {
+    border: 1px solid grey;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -o-border-radius: 10px 10px 10px 10px;
+    -ms-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    -ms-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+    padding: 5px;
+    width: 350px;
+    min-width: 350px;
+}
+
+.content {
+	margin: 0 auto;
+	background: -moz-linear-gradient(left top , blue, #C50A1F) repeat scroll 0 0 transparent;
+	background: -webkit-linear-gradient(left top , blue, #C50A1F) repeat scroll 0 0 transparent;
+	background: -ms-linear-gradient(left top , blue, #C50A1F) repeat scroll 0 0 transparent;
+	background: -o-linear-gradient(left top , blue, #C50A1F) repeat scroll 0 0 transparent;
+	background: linear-gradient(left top , blue, #C50A1F) repeat scroll 0 0 transparent;
 }

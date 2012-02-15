@@ -5,7 +5,6 @@ var minesweeper = (function(){
 	var initialMinesCnt;
 	var minesCnt;
 	var cCell = 'cell';
-	var cell = '<td class="' + cCell + ' closed"></td>';//
 	var row = '<tr class="row"></tr>';
 	var minenFeld;
 	var hinweisFeld;
@@ -15,7 +14,8 @@ var minesweeper = (function(){
 	var theEnd;
 	var timeCount = -1;
 	var intervalCount = 0;
-	var minew
+	var minew;
+	minesDebug = false; // must beglobal
 
 	function setHints(x,y) {
 		if(x > 0){
@@ -104,7 +104,6 @@ var minesweeper = (function(){
 			objFeld[i] = new Array(axis_y);
 			for(var j=0;j<axis_y;j++) {
 				objFeld[i][j] = $('<td class="' + cCell + ' closed" onmousedown="minesweeper.clickField(arguments[0], ' + i + ', ' + j + ');"></td>');
-				// rowObj.append($(cell).addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
 				rowObj.append(objFeld[i][j]);//.addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
 			}
 			field.append(rowObj);
@@ -136,10 +135,9 @@ var minesweeper = (function(){
 			$('#mwTimeCounter').text(++timeCount);
 		}, 1000);
 
+		do { // minimum one time
 		buildMinenFeld();
-		while (minenFeld[x][y] == mine ) {
-			buildMinenFeld();
-		}
+		} while (minenFeld[x][y] == mine ) 
 	}
 
 	function handleLeftMouseClick(x, y) {
@@ -217,12 +215,15 @@ var minesweeper = (function(){
 		if (minesCnt >= (axis_x * axis_y)) {
 			alert ('Zu viele Minen!');
 		} else {
-			field = conf.area;
 			theEnd = false;
-			field.addClass('running');
 			$('.minesCount').text(initialMinesCnt);
+			field = conf.area;
+			field.addClass('running');
+			field.removeClass('win');
+			field.removeClass('loose');
 			build();
-			// $('.closed.' + cCell, field).mousedown(handleMousedown);
+			$('.content').css('width', (axis_y + 1) * 24 +13);
+			$('#minesweeper').css('width', field.outerWidth());
 			timeCount = -1;
 			$('#mwTimeCounter').text('');
 		}
@@ -268,6 +269,7 @@ $(document).ready(function(){
 			mines:10
 		})
 	});
+	$('.button.easy').click();
 	$('.button.middle').click(function(){
 		minesweeper.init({
 			area:$('.area'),
