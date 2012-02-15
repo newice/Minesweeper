@@ -4,9 +4,9 @@ var minesweeper = (function(){
 	var axis_y;
 	var initialMinesCnt;
 	var minesCnt;
-	var cCell ="cell";
-	var cell="<td class='"+cCell+" closed'></td>";
-	var row="<tr class='row'></tr>";
+	var cCell = 'cell';
+	var cell = '<td class="' + cCell + ' closed"></td>';//
+	var row = '<tr class="row"></tr>';
 	var minenFeld;
 	var hinweisFeld;
 	var objFeld;
@@ -50,28 +50,28 @@ var minesweeper = (function(){
 
 		var temp;
 		if ((x > 0) && objFeld[x - 1][y].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x - 1][y]);
+				handleLeftMouseClick(x - 1, y);
 		}
 		if ((y > 0) && objFeld[x][y - 1].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x][y - 1]);
+				handleLeftMouseClick(x, y - 1);
 		}
 		if ((x < axis_x-1) && objFeld[x + 1][y].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x + 1][y]);
+				handleLeftMouseClick(x + 1, y);
 		}
 		if ((y < axis_y-1) && objFeld[x][y + 1].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x][y + 1]);
+				handleLeftMouseClick(x, y + 1);
 		}
 		if ((x > 0) && (y > 0) && objFeld[x - 1][y - 1].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x - 1][y - 1]);
+				handleLeftMouseClick(x - 1, y - 1);
 		}
 		if ((x > 0) && (y < axis_y-1) && objFeld[x - 1][y + 1].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x - 1][y + 1]);
+				handleLeftMouseClick(x - 1, y + 1);
 		}
 		if ((x < axis_x-1) && (y > 0) && objFeld[x+1][y-1].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x+1][y-1]);
+				handleLeftMouseClick(x + 1, y - 1);
 		}
 		if ((x < axis_x-1) && (y < axis_y-1) && objFeld[x+1][y+1].hasClass('closed')) {
-				handleLeftMouseClick(objFeld[x+1][y+1]);
+				handleLeftMouseClick(x + 1, y + 1);
 		}
 	}
 
@@ -99,19 +99,16 @@ var minesweeper = (function(){
 	function build() {
 		field.html('');
 		var rowObj = $(row);
+		objFeld = new Array(axis_x);
 		for(var i =0;i<axis_x;i++) {
+			objFeld[i] = new Array(axis_y);
 			for(var j=0;j<axis_y;j++) {
-				rowObj.append($(cell).addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
+				objFeld[i][j] = $('<td class="' + cCell + ' closed" onmousedown="minesweeper.clickField(arguments[0], ' + i + ', ' + j + ');"></td>');
+				// rowObj.append($(cell).addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
+				rowObj.append(objFeld[i][j]);//.addClass(cCell+'_'+i+'_'+j));//.text(minenFeld[i][j]));
 			}
 			field.append(rowObj);
 			rowObj = $(row);
-		}
-		objFeld = new Array(axis_x);
-		for(var i = 0; i < axis_x; i++) {
-			objFeld[i] = new Array(axis_y);
-			for(var j = 0; j < axis_y; j++) {
-				objFeld[i][j] = $('.' + cCell + '_' + i + '_' + j, field);
-			}
 		}
 	}
 
@@ -132,7 +129,7 @@ var minesweeper = (function(){
 		}
 	}
 
-	function initGame(x, y) {
+	function initGame(x, y) {// x, y coordinates of the first click
 		timeCount = 0;
 		$('#mwTimeCounter').text('0');
 		intervalCount = window.setInterval(function(){
@@ -144,13 +141,12 @@ var minesweeper = (function(){
 			buildMinenFeld();
 		}
 	}
-	
-	function handleLeftMouseClick(obj) {
-		var x = parseInt(obj.attr('class').split(cCell+'_')[1].split('_')[0]);
-		var y = parseInt(obj.attr('class').split(cCell+'_')[1].split('_')[1]);
+
+	function handleLeftMouseClick(x, y) {
 		if (timeCount < 0) {
 			initGame(x, y);
 		}
+		var obj = objFeld[x][y];
 		if(obj.hasClass('closed') && !(obj.data('right') == flag) ) {
 			if(minenFeld[x][y] != mine ){
 				obj.removeClass('closed');
@@ -172,8 +168,8 @@ var minesweeper = (function(){
 			}
 		}
 	}
-	
-	
+
+
 	function handleRightMouseClick(obj) {
 		if((timeCount >= 0) && obj.hasClass('closed')) {
 			if(!obj.data('right')){
@@ -194,17 +190,16 @@ var minesweeper = (function(){
 		}
 	}
 
-	function handleMousedown(event, aa){
+	function handleMousedown(e, x, y){
 		if (!theEnd) {
-			var obj = $(this);
-			switch (event.which) {
+			switch (e.which) {
 			case 1:
-				// console.profile();
-				handleLeftMouseClick(obj);
-				// console.profileEnd();
+				if (minesDebug) console.profile();
+				handleLeftMouseClick(x, y);
+				if (minesDebug) console.profileEnd();
 				break;
 			case 3:
-				handleRightMouseClick(obj);
+				handleRightMouseClick(objFeld[x][y]);
 			break;
 			default:
 				alert('komische maus');
@@ -213,6 +208,7 @@ var minesweeper = (function(){
 	}
 
 	function init(conf) {
+		if (minesDebug) console.profile();
 		axis_x = parseInt(conf.x);
 		axis_y = parseInt(conf.y);
 		initialMinesCnt = parseInt(conf.mines);
@@ -226,14 +222,16 @@ var minesweeper = (function(){
 			field.addClass('running');
 			$('.minesCount').text(initialMinesCnt);
 			build();
-			$('.closed.' + cCell ,field).mousedown(handleMousedown);
+			// $('.closed.' + cCell, field).mousedown(handleMousedown);
 			timeCount = -1;
 			$('#mwTimeCounter').text('');
 		}
+		if (minesDebug) console.profileEnd();
 	}
 
   return{
-		init:init
+		init:init,
+		clickField: handleMousedown
 	}
 })();
 document.oncontextmenu = function(e){
